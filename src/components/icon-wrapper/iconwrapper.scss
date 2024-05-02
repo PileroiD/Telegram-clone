@@ -1,0 +1,8 @@
+.iconWrapper {
+    cursor: pointer;
+    transition: 200ms ease-in-out;
+    
+    &:hover {
+        transform: translateY(-2px);
+    }
+}
