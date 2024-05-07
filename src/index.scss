@@ -24,4 +24,14 @@ body {
     border-radius: 12px;
     border: 1px solid rgba($color: #fff, $alpha: 0.125);
     display: flex;
+    position: relative;
+
+    .spinner {
+        width: 100px;
+        height: 100px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translateX(-50%) translateY(-50%);
+    }
 }

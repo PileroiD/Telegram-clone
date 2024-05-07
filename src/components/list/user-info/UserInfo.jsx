@@ -1,16 +1,21 @@
+import { useUserStore } from "../../../store/userStore";
 import IconWrapper from "../../icon-wrapper/IconWrapper";
 import "./userinfo.scss";
 
 const UserInfo = () => {
+    const {
+        currentUser: { avatar, username },
+    } = useUserStore();
+
     return (
         <div className="userInfo">
             <div className="user">
                 <img
                     className="user-img"
-                    src="./avatar.png"
+                    src={avatar || "./avatar.png"}
                     alt="user-avatar"
                 />
-                <h2>John Doe</h2>
+                <h2>{username}</h2>
             </div>
             <div className="icons">
                 <IconWrapper>

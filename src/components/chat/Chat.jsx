@@ -2,11 +2,17 @@ import "./chat.scss";
 import EmojiPicker from "emoji-picker-react";
 
 import IconWrapper from "../icon-wrapper/IconWrapper";
-import { useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { doc, onSnapshot } from "firebase/firestore";
+import { db } from "../../lib/firebase";
+import { useChatStore } from "../../store/chatStore";
 
 const Chat = () => {
+    const { chatId } = useChatStore();
+
     const [openEmoji, setOpenEmoji] = useState(false);
     const [textValue, setTextValue] = useState("");
+    const [chat, setChat] = useState([]);
 
     const scrollableRef = useRef(null);
 
@@ -16,6 +22,16 @@ const Chat = () => {
             scrollableElement.scrollTop = scrollableElement.scrollHeight;
         }
     }, []);
+
+    useEffect(() => {
+        if (chatId) {
+            const unsub = onSnapshot(doc(db, "chats", chatId), (res) => {
+                setChat(res.data());
+            });
+
+            return () => unsub();
+        }
+    }, [chatId]);
 
     return (
         <div className="chat">
@@ -40,79 +56,15 @@ const Chat = () => {
                 </div>
             </div>
             <div className="center" ref={scrollableRef}>
-                <div className="message">
-                    <img
-                        className="user-icon"
-                        src="./avatar.png"
-                        alt="user-avatar"
-                    />
-                    <div className="texts">
-                        <p>
-                            Lorem ipsum dolor sit amet, consectetur adipisicing
-                            elit. Quaerat eveniet ducimus officiis! Alias.
-                        </p>
-                        <span>1 min ago</span>
+                {chat?.messages?.map((msg) => (
+                    <div className="message own" key={msg?.createdAt}>
+                        <div className="texts">
+                            {msg.img && <img src={msg.img} alt="message-img" />}
+                            <p>{msg.text}</p>
+                            {/* <span>{msg.createdAt}</span> */}
+                        </div>
                     </div>
-                </div>
-                <div className="message own">
-                    <div className="texts">
-                        <p>
-                            Lorem ipsum dolor sit amet, consectetur adipisicing
-                            elit. Quaerat eveniet ducimus officiis! Alias.
-                        </p>
-                        <span>1 min ago</span>
-                    </div>
-                </div>
-                <div className="message">
-                    <img
-                        className="user-icon"
-                        src="./avatar.png"
-                        alt="user-avatar"
-                    />
-                    <div className="texts">
-                        <p>
-                            Lorem ipsum dolor sit amet, consectetur adipisicing
-                            elit. Quaerat eveniet ducimus officiis! Alias.
-                        </p>
-                        <span>1 min ago</span>
-                    </div>
-                </div>
-                <div className="message own">
-                    <div className="texts">
-                        <p>
-                            Lorem ipsum dolor sit amet, consectetur adipisicing
-                            elit. Quaerat eveniet ducimus officiis! Alias.
-                        </p>
-                        <span>1 min ago</span>
-                    </div>
-                </div>
-                <div className="message">
-                    <img
-                        className="user-icon"
-                        src="./avatar.png"
-                        alt="user-avatar"
-                    />
-                    <div className="texts">
-                        <p>
-                            Lorem ipsum dolor sit amet, consectetur adipisicing
-                            elit. Quaerat eveniet ducimus officiis! Alias.
-                        </p>
-                        <span>1 min ago</span>
-                    </div>
-                </div>
-                <div className="message own">
-                    <div className="texts">
-                        <img
-                            src="https://wallpapers.com/images/featured/coolest-pictures-88c269e953ar0aw4.jpg"
-                            alt=""
-                        />
-                        <p>
-                            Lorem ipsum dolor sit amet, consectetur adipisicing
-                            elit. Quaerat eveniet ducimus officiis! Alias.
-                        </p>
-                        <span>1 min ago</span>
-                    </div>
-                </div>
+                ))}
             </div>
             <div className="bottom">
                 <div className="icons">

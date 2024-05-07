@@ -73,6 +73,11 @@
                 &:hover {
                     opacity: 1;
                 }
+
+                &:disabled {
+                    cursor: not-allowed;
+                    background-color: #9fd2ff;
+                }
             }
         }
     }
